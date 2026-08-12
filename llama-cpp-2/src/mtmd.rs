@@ -212,6 +212,12 @@ impl MtmdContext {
         }
     }
 
+    /// A raw pointer to the wrapped `mtmd_context`.
+    #[must_use]
+    pub fn context_ptr(&self) -> *mut llama_cpp_sys_2::mtmd_context {
+        self.context.as_ptr()
+    }
+
     /// Check whether the current model uses M-RoPE for `llama_decode`.
     ///
     /// M-RoPE (Multimodal Rotary Position Embedding) affects how positions

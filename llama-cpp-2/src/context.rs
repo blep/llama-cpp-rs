@@ -89,6 +89,12 @@ impl<'model> LlamaContext<'model> {
         unsafe { llama_cpp_sys_2::llama_n_ctx(self.context.as_ptr()) }
     }
 
+    /// A raw pointer to the wrapped `llama_context`.
+    #[must_use]
+    pub fn context_ptr(&self) -> *mut llama_cpp_sys_2::llama_context {
+        self.context.as_ptr()
+    }
+
     /// Decodes the batch.
     ///
     /// # Errors

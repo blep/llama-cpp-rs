@@ -210,6 +210,13 @@ impl<'model> LlamaContext<'model> {
         }
     }
 
+    /// The context's live pooling type (`llama_pooling_type`): NONE for
+    /// chat/instruction models, MEAN/CLS/LAST/RANK for embedding models.
+    /// The discriminator for embedding-endpoint gates.
+    pub fn pooling_type(&self) -> llama_cpp_sys_2::llama_pooling_type {
+        unsafe { llama_cpp_sys_2::llama_pooling_type(self.context.as_ptr()) }
+    }
+
     /// The correct output width for an embeddings read, keyed on the context's
     /// LIVE pooling type rather than the model's `n_embd`.
     ///

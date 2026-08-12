@@ -86,6 +86,21 @@ impl GgufContext {
         unsafe { CStr::from_ptr(ptr).to_str().ok() }
     }
 
+    /// Read a `bool` value. Panics (inside llama.cpp) if the stored type is
+    /// not `GGUF_TYPE_BOOL` — check `kv_type` first if unsure.
+    pub fn val_bool(&self, idx: i64) -> bool {
+        unsafe { llama_cpp_sys_2::gguf_get_val_bool(self.ctx.as_ptr(), idx) }
+    }
+
+    /// Return the name of the `idx`-th tensor, or `None` if out of range.
+    pub fn tensor_name_at(&self, idx: i64) -> Option<&str> {
+        let ptr = unsafe { llama_cpp_sys_2::gguf_get_tensor_name(self.ctx.as_ptr(), idx) };
+        if ptr.is_null() {
+            return None;
+        }
+        unsafe { CStr::from_ptr(ptr).to_str().ok() }
+    }
+
     /// Total number of tensors described in the file.
     pub fn n_tensors(&self) -> i64 {
         unsafe { llama_cpp_sys_2::gguf_get_n_tensors(self.ctx.as_ptr()) }

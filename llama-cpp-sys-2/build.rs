@@ -1104,6 +1104,7 @@ fn main() {
             .include(llama_src.join("ggml/include"))
             .include(llama_src.join("common"))
             .include(llama_src.join("vendor"))
+            .include(llama_src.join("vendor/hash"))
             .flag_if_supported("-std=c++17")
             .flag_if_supported("-Wno-cast-qual")
             .pic(true);
@@ -1132,6 +1133,19 @@ fn main() {
                 Err(e) => println!("cargo:warning=mtmd glob error: {}", e),
             }
         }
+
+        // mtmd-helper.cpp's bitmap IDs are now SHA-256 digests (upstream #27274), which
+        // live in llama.cpp's vendored hash library. Mirror the upstream `vendor::hash`
+        // target (vendor/hash/CMakeLists.txt): hash.cpp is C++ and wraps sha256.c in
+        // `extern "C"`, so the C source must be compiled as C (its header has no
+        // `extern "C"` guards) — hence the separate C-only library.
+        mtmd_build.file(llama_src.join("vendor/hash/hash.cpp"));
+
+        cc::Build::new()
+            .file(llama_src.join("vendor/hash/sha256/sha256.c"))
+            .include(llama_src.join("vendor/hash"))
+            .pic(true)
+            .compile("vendor_hash");
 
         mtmd_build.compile("mtmd");
     }

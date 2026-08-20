@@ -547,6 +547,17 @@ impl LlamaModelParams {
         self
     }
 
+    /// sets `use_extra_bufts` — the `--repack` flag. The extra buffer types
+    /// (accelerator/host and the CPU backend's repacked layouts) copy
+    /// weights out of the default mmap-backed buffer; disabling them keeps
+    /// every weight in the file-backed view (a model that does not fit in
+    /// RAM then loads via mmap).
+    #[must_use]
+    pub fn with_use_extra_bufts(mut self, use_extra_bufts: bool) -> Self {
+        self.params.use_extra_bufts = use_extra_bufts;
+        self
+    }
+
     /// sets `split_mode`
     #[must_use]
     pub fn with_split_mode(mut self, split_mode: LlamaSplitMode) -> Self {

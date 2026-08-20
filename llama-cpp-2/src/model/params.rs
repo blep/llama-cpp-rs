@@ -558,6 +558,17 @@ impl LlamaModelParams {
         self
     }
 
+    /// sets `load_mtp` — load a model's MTP (multi-token prediction) layers
+    /// instead of the trunk. The MTP head GGUF (e.g. `mtp-*.gguf`) holds
+    /// only the nextn layers of the base architecture; llama.cpp requires
+    /// this flag so the trunk tensors stay optional and the nextn tensors
+    /// are not skipped.
+    #[must_use]
+    pub fn with_load_mtp(mut self, load_mtp: bool) -> Self {
+        self.params.load_mtp = load_mtp;
+        self
+    }
+
     /// sets `split_mode`
     #[must_use]
     pub fn with_split_mode(mut self, split_mode: LlamaSplitMode) -> Self {
